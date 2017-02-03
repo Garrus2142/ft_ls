@@ -6,13 +6,12 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:43:48 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/02 15:45:25 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/03 09:56:35 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "ft_ls.h"
-#include "../libft/libft.h"
 
 static void	print_usage(char option)
 {
@@ -43,7 +42,22 @@ static void	check_option(char *options, t_params *params)
 	}
 }
 
-void	read_args(int argc, char **argv, t_params *params)
+static void	copy_files(char **files, int n, t_params *params)
+{
+	int	i;
+
+	params->nfiles = n;
+	if (!(params->files = (char **)malloc(sizeof(char *) * n)))
+		exit(EXIT_FAILURE);
+	i = -1;
+	while (++i < n)
+	{
+		if (!(params->files[i] = ft_strdup(files[i])))
+			exit(EXIT_FAILURE);
+	}
+}
+
+void		read_args(int argc, char **argv, t_params *params)
 {
 	int		i;
 	char	endopt;
@@ -60,9 +74,13 @@ void	read_args(int argc, char **argv, t_params *params)
 			check_option(argv[i] + 1, params);
 		else
 		{
-			params->files = argv + i;
-			params->nfiles = argc - i;
-			break ;
+			copy_files(argv + i, argc - i, params);
+			return ;
 		}
 	}
+	params->nfiles = 1;
+	if (!(params->files = (char **)malloc(sizeof(char *))))
+		exit(EXIT_FAILURE);
+	if (!(params->files[0] = ft_strdup(".")))
+		exit(EXIT_FAILURE);
 }

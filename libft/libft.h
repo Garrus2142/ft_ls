@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/04 19:03:23 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/02 14:20:48 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/03 10:46:15 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
+void				ft_lstaddsort(t_list **alst, t_list *new, void *param,
+	   					int (*sort)(t_list *new, t_list *next, void *param));
 size_t				ft_lstlen(t_list *lst);
 void				ft_lstrem(t_list **lst);
 int					ft_isspace(int c);
@@ -104,6 +106,7 @@ int					ft_min(int a, int b);
 int					ft_max(int a, int b);
 size_t				ft_tabptrlen(void **tab);
 void				ft_tabptrfree(void	***tab);
+void				ft_tabfree(void ***tab, size_t size);
 int					ft_pow(int x, int y);
 char				*ft_to_utf8(int c);
 void				*ft_memjoin(void const *s1, size_t l1, void const *s2,

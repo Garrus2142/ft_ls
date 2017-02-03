@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strfjoin.c                                      :+:      :+:    :+:   */
+/*   stats.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/11 22:09:39 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/03 13:36:11 by thugo            ###   ########.fr       */
+/*   Created: 2017/02/03 09:05:09 by thugo             #+#    #+#             */
+/*   Updated: 2017/02/03 09:57:48 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
+#include <sys/stat.h>
+#include <sys/xattr.h>
+#include <errno.h>
+#include <string.h>
+#include "ft_ls.h"
 
-char	*ft_strfjoin(char *s1, int f1, char *s2, int f2)
+void		file_get_stats(t_file *file)
 {
-	char	*str;
+	int	ret;
 
-	if (!(str = ft_strjoin(s1, s2)))
-		return (NULL);
-	if (f1)
-		free(s1);
-	if (f2)
-		free(s2);
-	return (str);
+	if (lstat(file->path, &(file->stats)) != 0)
+		file->errmsg = strerror(errno);
+	if ((ret = listxattr(file->path, NULL,0, XATTR_NOFOLLOW)) == -1)
+		file->errmsg = strerror(errno);
+	file->xattr = ret > 0 ? 1 : 0;
 }
