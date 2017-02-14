@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/03 15:16:39 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/14 15:50:34 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void debug_content(t_file *file, int level)
 int		main(int argc, char **argv)
 {
 	t_params params;
-	t_file	*files;
+	t_list	*files;
 	t_list	*cur;
 
 	read_args(argc, argv, &params);
@@ -43,17 +43,19 @@ int		main(int argc, char **argv)
 	int i = -1;
 	while (++i < params.nfiles)
 		ft_printf("%s\n", params.files[i]);
-	ft_printf("<Next>\n");
-	if (!(files = (t_file *)malloc(sizeof(t_file) * params.nfiles)))
-		exit(EXIT_FAILURE);
-	process_files(&params, files);
-	i = -1;
-	while (++i < params.nfiles)
+	ft_printf("\033[31m<CONTENT>\033[0m\n");
+	files = NULL;
+	params.options = params.options | OPT_SORT_TYPE;
+	process_files(&params, &files);
+	cur = files;
+	while (cur)
 	{
-		printf("%s xattr: %d uid: %d size: %lld err: %s\n", files[i].path, files[i].xattr, files[i].stats.st_uid, files[i].stats.st_size, files[i].errmsg);
-		debug_content(files + i, 1);
+		t_file *f = (t_file *)cur->content;
+		printf("%s xattr: %d uid: %d size: %lld err: %s\n", f->path, f->xattr, f->stats.st_uid, f->stats.st_size, f->errmsg);
+		debug_content(f, 1);
+		cur = cur->next;
 	}
-	free(files);
+	//free(files);
 	ft_tabfree((void ***)&(params.files), params.nfiles);
 	return (EXIT_SUCCESS);
 }
