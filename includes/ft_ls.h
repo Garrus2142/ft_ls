@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/03 11:33:34 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/14 15:49:52 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # define OPT_a 4
 # define OPT_r 8
 # define OPT_t 16
+# define OPT_SORT_TYPE 32
 
 # include <sys/stat.h>
 # include "../libft/libft.h"
@@ -40,7 +41,7 @@ typedef struct		s_file
 }					t_file;
 
 void				read_args(int argc, char **argv, t_params *params);
-void				process_files(t_params *params, t_file *files);
-void				file_get_stats(t_file *file);
+void				process_files(t_params *params, t_list **files);
+void				file_get_stats(t_params *p, t_file *file);
 
 #endif
