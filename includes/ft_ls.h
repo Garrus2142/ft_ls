@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/14 15:49:52 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 15:09:17 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@
 # define OPT_t 16
 # define OPT_SORT_TYPE 32
 
+# define IS_OPERAND 1
+
 # include <sys/stat.h>
 # include "../libft/libft.h"
 
 typedef struct		s_params
 {
 	char			options;
+	char			infos;
 	char			**files;
 	int				nfiles;
 }					t_params;
@@ -38,10 +41,12 @@ typedef struct		s_file
 	char			*errmsg;
 	struct stat		stats;
 	int				xattr;
+	char			infos;
 }					t_file;
 
 void				read_args(int argc, char **argv, t_params *params);
 void				process_files(t_params *params, t_list **files);
 void				file_get_stats(t_params *p, t_file *file);
+void				display_file(t_params *p, t_file *file);
 
 #endif

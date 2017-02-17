@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/14 16:38:21 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 17:05:09 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ft_ls.h"
+
+static void		free_file(t_list *elem)
+{
+	free(((t_file *)elem->content)->path);
+	free(((t_file *)elem->content)->name);
+	if (((t_file *)elem->content)->errmsg)
+		free(((t_file *)elem->content)->errmsg);
+	free(elem->content);
+	free(elem);
+}
 
 static int		sort_child(t_list *new, t_list *next, void *param)
 {
@@ -54,6 +64,7 @@ static t_file	*dir_add_child(t_params *p, t_file *parent, char *name)
 		exit(EXIT_FAILURE);
 	child.childs = NULL;
 	child.errmsg = NULL;
+	child.infos = 0;
 	file_get_stats(p, &child);
 	if (!(new = ft_lstnew(&child, sizeof(child))))
 		exit(EXIT_FAILURE);
@@ -66,31 +77,40 @@ static void		dir_get_childs(t_params *p, t_file *f)
 	DIR				*dir;
 	struct dirent	*dirent;
 	t_file			*child;
+	t_list			*cur;
+	t_list			*tmp;
 
 	if (!(dir = opendir(f->path)))
 	{
-		f->errmsg = strerror(errno);
+		if (!f->errmsg && !(f->errmsg = ft_strdup(strerror(errno))))
+			exit(EXIT_FAILURE);
 		return ;
 	}
 	while ((dirent = readdir(dir)))
 	{
 		if (dirent->d_name[0] != '.' || p->options & OPT_a)
-		{
 			child = dir_add_child(p, f, dirent->d_name);
-			if (p->options & OPT_R && dirent->d_type & DT_DIR && ft_strcmp(
-				dirent->d_name, ".") != 0 && ft_strcmp(dirent->d_name, "..")
-				!= 0)
-				dir_get_childs(p, child);
-		}
 	}
 	closedir(dir);
+	display_file(p, f);
+	cur = f->childs;
+	while (cur)
+	{
+		if (p->options & OPT_R && ((t_file *)cur->content)->stats.st_mode & S_IFDIR && ft_strcmp(
+			((t_file *)cur->content)->name, ".") != 0 && ft_strcmp(((t_file *)cur->content)->name, "..") != 0)
+			dir_get_childs(p, (t_file *)cur->content);
+		tmp = cur;
+		cur = cur->next;
+		free_file(tmp);
+	}
+
 }
 
 void			process_files(t_params *params, t_list **files)
 {
 	t_file	file;
 	t_list	*cur;
-	t_list	*new;
+	t_list	*tmp;
 	int		i;
 
 	i = -1;
@@ -102,18 +122,23 @@ void			process_files(t_params *params, t_list **files)
 			exit(EXIT_FAILURE);
 		file.childs = NULL;
 		file.errmsg = NULL;
+		file.infos = IS_OPERAND;
 		file_get_stats(params, &file);
-		if (!(new = ft_lstnew(&file, sizeof(file))))
+		if (!(tmp = ft_lstnew(&file, sizeof(file))))
 			exit(EXIT_FAILURE);
-		ft_lstaddsort(files, new, params, sort_child);
+		ft_lstaddsort(files, tmp, params, sort_child);
 	}
-	params->options = params->options & 223;
+	params->options = params->options & (255 ^ OPT_SORT_TYPE);
 	cur = *files;
 	while (cur)
 	{
 		if (!((t_file *)cur->content)->errmsg && ((t_file *)cur->content)->
 			stats.st_mode & S_IFDIR)
 			dir_get_childs(params, (t_file *)cur->content);
+		else if (!((t_file *)cur->content)->errmsg)
+			display_file(params, (t_file *)cur->content);
+		tmp = cur;
 		cur = cur->next;
+		free_file(tmp);
 	}
 }

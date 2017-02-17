@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/14 15:50:34 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 14:12:25 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ int		main(int argc, char **argv)
 	files = NULL;
 	params.options = params.options | OPT_SORT_TYPE;
 	process_files(&params, &files);
-	cur = files;
+	/*cur = files;
 	while (cur)
 	{
 		t_file *f = (t_file *)cur->content;
 		printf("%s xattr: %d uid: %d size: %lld err: %s\n", f->path, f->xattr, f->stats.st_uid, f->stats.st_size, f->errmsg);
 		debug_content(f, 1);
 		cur = cur->next;
-	}
+	}*/
 	//free(files);
 	ft_tabfree((void ***)&(params.files), params.nfiles);
 	return (EXIT_SUCCESS);
