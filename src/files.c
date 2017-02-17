@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 20:11:47 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 21:47:47 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,27 @@
 #include <stdlib.h>
 #include "ft_ls.h"
 
-static void		free_file(t_list *elem)
-{
-	free(((t_file *)elem->content)->path);
-	free(((t_file *)elem->content)->name);
-	free(elem->content);
-	free(elem);
-}
-
 static int		sort_child(t_list *new, t_list *next, void *param)
 {
 	if (((t_params *)param)->options & OPT_SORT_TYPE)
 	{
-		if (((t_file *)new->content)->stats.st_mode & S_IFDIR && !(((t_file *)
-			next->content)->stats.st_mode & S_IFDIR))
+		if (ACC_FILE(new)->stats.st_mode & S_IFDIR &&
+				!(ACC_FILE(next)->stats.st_mode & S_IFDIR))
 			return (0);
-		else if (!(((t_file *)new->content)->stats.st_mode & S_IFDIR) &&
-			((t_file *)next->content)->stats.st_mode & S_IFDIR)
+		else if (!(ACC_FILE(new)->stats.st_mode & S_IFDIR) &&
+				ACC_FILE(next)->stats.st_mode & S_IFDIR)
 			return (1);
 	}
 	if (((t_params *)param)->options & OPT_t)
 	{
-		if (((t_file *)new->content)->stats.st_mtimespec.tv_sec >
-				((t_file *)next->content)->stats.st_mtimespec.tv_sec)
+		if (ACC_FILE(new)->stats.st_mtimespec.tv_sec >
+				ACC_FILE(next)->stats.st_mtimespec.tv_sec)
 			return (((t_params *)param)->options & OPT_r ? 0 : 1);
-		else if (((t_file *)new->content)->stats.st_mtimespec.tv_sec <
-				((t_file *)next->content)->stats.st_mtimespec.tv_sec)
+		else if (ACC_FILE(new)->stats.st_mtimespec.tv_sec <
+				ACC_FILE(next)->stats.st_mtimespec.tv_sec)
 			return (((t_params *)param)->options & OPT_r ? 1 : 0);
 	}
-	if (ft_strcmp(((t_file *)new->content)->name,
-			((t_file *)next->content)->name) < 0)
+	if (ft_strcmp(ACC_FILE(new)->name, ACC_FILE(next)->name) < 0)
 		return (((t_params *)param)->options & OPT_r ? 0 : 1);
 	return (((t_params *)param)->options & OPT_r ? 1 : 0);
 }
@@ -56,7 +47,10 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 	char	*fullpath;
 	t_list	*new;
 
-	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path, (parent->infos & IS_ROOT) ? "" : "/"), 1, name, 0)))
+	if (name[0] == '.' && !(p->options & OPT_a))
+		return ;
+	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path,
+			(parent->infos & IS_ROOT) ? "" : "/"), 1, name, 0)))
 		exit(EXIT_FAILURE);
 	if (!(child.name = ft_strdup(name)))
 		exit(EXIT_FAILURE);
@@ -82,29 +76,24 @@ static void		dir_get_childs(t_params *p, t_file *f)
 		return ;
 	}
 	while ((dirent = readdir(dir)))
-	{
-		if (dirent->d_name[0] != '.' || p->options & OPT_a)
-			dir_add_child(p, f, dirent->d_name);
-	}
+		dir_add_child(p, f, dirent->d_name);
 	closedir(dir);
 	display_file(p, f);
 	cur = f->childs;
-	while (cur)
+	while ((tmp = cur))
 	{
-		if (p->options & OPT_R && ((t_file *)cur->content)->stats.st_mode & S_IFDIR && ft_strcmp(
-			((t_file *)cur->content)->name, ".") != 0 && ft_strcmp(((t_file *)cur->content)->name, "..") != 0)
+		if (p->options & OPT_R && ACC_FILE(cur)->stats.st_mode & S_IFDIR &&
+				ft_strcmp(ACC_FILE(cur)->name, ".") != 0 &&
+				ft_strcmp(ACC_FILE(cur)->name, "..") != 0)
 			dir_get_childs(p, (t_file *)cur->content);
-		tmp = cur;
 		cur = cur->next;
 		free_file(tmp);
 	}
-
 }
 
-void			process_files(t_params *params, t_list **files)
+static void		setup_operand(t_params *params, t_list **files)
 {
 	t_file	file;
-	t_list	*cur;
 	t_list	*tmp;
 	int		i;
 
@@ -122,16 +111,23 @@ void			process_files(t_params *params, t_list **files)
 			exit(EXIT_FAILURE);
 		ft_lstaddsort(files, tmp, params, sort_child);
 	}
+}
+
+void			process_files(t_params *params, t_list **files)
+{
+	t_list	*cur;
+	t_list	*tmp;
+
+	setup_operand(params, files);
 	params->options = params->options & (255 ^ OPT_SORT_TYPE);
 	cur = *files;
-	while (cur)
+	while ((tmp = cur))
 	{
-		if (!(((t_file *)cur->content)->infos & IS_ERROR) && ((t_file *)cur->
-			content)->stats.st_mode & S_IFDIR)
+		if (!(ACC_FILE(cur)->infos & IS_ERROR) &&
+				ACC_FILE(cur)->stats.st_mode & S_IFDIR)
 			dir_get_childs(params, (t_file *)cur->content);
-		else if (!(((t_file *)cur->content)->infos & IS_ERROR))
+		else if (!(ACC_FILE(cur)->infos & IS_ERROR))
 			display_file(params, (t_file *)cur->content);
-		tmp = cur;
 		cur = cur->next;
 		free_file(tmp);
 	}

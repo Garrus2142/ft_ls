@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:43:48 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/03 09:56:35 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 21:38:33 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	print_usage(char option)
 {
 	ft_printf("ft_ls: illegal option -- %c\nusage: ft_ls [-lRart] [file ...]\n",
 		option);
-	exit(EXIT_SUCCESS);
+	exit(EXIT_FAILURE);
 }
 
 static void	check_option(char *options, t_params *params)

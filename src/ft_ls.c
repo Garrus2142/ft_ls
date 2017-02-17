@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 21:42:41 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 21:43:15 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,14 @@ void	ls_error(t_file *file)
 	res = ft_strjoin("ls: ", file->name);
 	perror(res);
 	free(res);
+}
+
+void		free_file(t_list *elem)
+{
+	free(((t_file *)elem->content)->path);
+	free(((t_file *)elem->content)->name);
+	free(elem->content);
+	free(elem);
 }
 
 int		main(int argc, char **argv)

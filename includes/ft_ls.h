@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 20:01:07 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 21:43:34 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define IS_OPERAND 1
 # define IS_ERROR 2
 # define IS_ROOT 4
+
+# define ACC_FILE(cur) ((t_file *)cur->content)
 
 # include <sys/stat.h>
 # include "../libft/libft.h"
@@ -50,5 +52,6 @@ void				process_files(t_params *params, t_list **files);
 void				file_get_stats(t_params *p, t_file *file);
 void				display_file(t_params *p, t_file *file);
 void				ls_error(t_file *file);
+void				free_file(t_list *elem);
 
 #endif
