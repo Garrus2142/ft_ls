@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 18:27:29 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 20:01:07 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 # define IS_OPERAND 1
 # define IS_ERROR 2
+# define IS_ROOT 4
 
 # include <sys/stat.h>
 # include "../libft/libft.h"

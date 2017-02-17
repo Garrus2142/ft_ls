@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 19:16:54 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 20:11:47 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 	char	*fullpath;
 	t_list	*new;
 
-	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path, "/"), 1, name, 0)))
+	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path, (parent->infos & IS_ROOT) ? "" : "/"), 1, name, 0)))
 		exit(EXIT_FAILURE);
 	if (!(child.name = ft_strdup(name)))
 		exit(EXIT_FAILURE);
@@ -116,7 +116,7 @@ void			process_files(t_params *params, t_list **files)
 		if (!(file.name = ft_strdup(params->files[i])))
 			exit(EXIT_FAILURE);
 		file.childs = NULL;
-		file.infos = IS_OPERAND;
+		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
 		file_get_stats(params, &file);
 		if (!(tmp = ft_lstnew(&file, sizeof(file))))
 			exit(EXIT_FAILURE);
