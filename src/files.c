@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 17:05:09 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 17:09:50 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ static void		dir_get_childs(t_params *p, t_file *f)
 	{
 		if (!f->errmsg && !(f->errmsg = ft_strdup(strerror(errno))))
 			exit(EXIT_FAILURE);
+		display_file(p, f);
 		return ;
 	}
 	while ((dirent = readdir(dir)))
