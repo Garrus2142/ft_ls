@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 14:12:25 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/17 18:30:08 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ void debug_content(t_file *file, int level)
 			debug_content(((t_file *)cur->content), level + 1);
 		cur = cur->next;
 	}
+}
+
+void	ls_error(t_file *file)
+{
+	char	*res;
+
+	file->infos = file->infos | IS_ERROR;
+	res = ft_strjoin("ls: ", file->name);
+	perror(res);
+	free(res);
 }
 
 int		main(int argc, char **argv)
