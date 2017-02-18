@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 21:43:15 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 12:03:27 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ls_error(t_file *file)
 	free(res);
 }
 
-void		free_file(t_list *elem)
+void	free_file(t_list *elem)
 {
 	free(((t_file *)elem->content)->path);
 	free(((t_file *)elem->content)->name);
@@ -33,9 +33,9 @@ void		free_file(t_list *elem)
 
 int		main(int argc, char **argv)
 {
-	t_params params;
-	t_list	*files;
-	t_list	*cur;
+	t_params	params;
+	t_list		*files;
+	t_list		*cur;
 
 	read_args(argc, argv, &params);
 	files = NULL;
