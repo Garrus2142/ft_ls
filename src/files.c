@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 16:32:25 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 17:11:22 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,12 @@ static void		setup_operand(t_params *params, t_list **files)
 		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
 		file.total = 0;
 		file_get_stats(params, &file);
-		if (!(tmp = ft_lstnew(&file, sizeof(file))))
-			exit(EXIT_FAILURE);
-		ft_lstaddsort(files, tmp, params, sort_child);
+		if (!(file.infos & IS_ERROR))
+		{
+			if (!(tmp = ft_lstnew(&file, sizeof(file))))
+				exit(EXIT_FAILURE);
+			ft_lstaddsort(files, tmp, params, sort_child);
+		}
 	}
 }
 
@@ -130,10 +133,9 @@ void			process_files(t_params *params, t_list **files)
 	{
 		free(ACC_FILE(cur)->name);
 		ACC_FILE(cur)->name = ft_path_getfile(ACC_FILE(cur)->path);
-		if (!(ACC_FILE(cur)->infos & IS_ERROR) &&
-				ACC_FILE(cur)->stats.st_mode & S_IFDIR)
+		if (ACC_FILE(cur)->stats.st_mode & S_IFDIR)
 			dir_get_childs(params, (t_file *)cur->content);
-		else if (!(ACC_FILE(cur)->infos & IS_ERROR))
+		else
 			display_file(params, (t_file *)cur->content);
 		cur = cur->next;
 		free_file(tmp);
