@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 09:05:09 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 18:34:41 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 15:50:41 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void		file_get_stats(t_params *p, t_file *file)
 {
 	int	ret;
 
-	if (!(p->options & OPT_l) && file->infos & IS_OPERAND)
+	if (!(p->options & OPT_L_LOW) && file->infos & IS_OPERAND)
 	{
 		if (stat(file->path, &(file->stats)) != 0 && !(file->infos & IS_ERROR))
 			ls_error(file);
