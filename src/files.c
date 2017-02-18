@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 21:47:47 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 13:35:27 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,8 @@ void			process_files(t_params *params, t_list **files)
 	cur = *files;
 	while ((tmp = cur))
 	{
+		free(ACC_FILE(cur)->name);
+		ACC_FILE(cur)->name = ft_path_getfile(ACC_FILE(cur)->path);
 		if (!(ACC_FILE(cur)->infos & IS_ERROR) &&
 				ACC_FILE(cur)->stats.st_mode & S_IFDIR)
 			dir_get_childs(params, (t_file *)cur->content);
