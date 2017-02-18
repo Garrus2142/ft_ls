@@ -6,21 +6,21 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:43:48 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 15:53:02 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 16:42:57 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "ft_ls.h"
 
-static void	print_usage(char option)
+static void	print_usage(char *cmd, char option)
 {
-	ft_printf("ft_ls: illegal option -- %c\nusage: ft_ls [-%s] [file ...]\n",
-		option, "lRartG1");
+	ft_printf("%s: illegal option -- %c\nusage: ft_ls [-%s] [file ...]\n",
+		cmd, option, "lRartG1");
 	exit(EXIT_FAILURE);
 }
 
-static void	check_option(char *options, t_params *params)
+static void	check_option(char *cmd, char *options, t_params *params)
 {
 	int	i;
 
@@ -42,7 +42,7 @@ static void	check_option(char *options, t_params *params)
 		else if (options[i] == '1')
 			params->options = params->options | OPT_1;
 		else
-			print_usage(options[i]);
+			print_usage(cmd, options[i]);
 	}
 }
 
@@ -75,7 +75,7 @@ void		read_args(int argc, char **argv, t_params *params)
 		if (!endopt && ft_strcmp(argv[i], "--") == 0)
 			endopt = 1;
 		else if (!endopt && ft_strlen(argv[i]) > 1 && argv[i][0] == '-')
-			check_option(argv[i] + 1, params);
+			check_option(argv[0], argv[i] + 1, params);
 		else
 		{
 			copy_files(argv + i, argc - i, params);
