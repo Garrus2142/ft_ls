@@ -6,23 +6,26 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/17 21:43:34 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 16:31:18 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-# define OPT_l 1
+# define OPT_L_LOW 1
 # define OPT_R 2
-# define OPT_a 4
-# define OPT_r 8
-# define OPT_t 16
+# define OPT_A_LOW 4
+# define OPT_R_LOW 8
+# define OPT_T_LOW 16
 # define OPT_SORT_TYPE 32
+# define OPT_G 64
+# define OPT_1 128
 
 # define IS_OPERAND 1
 # define IS_ERROR 2
 # define IS_ROOT 4
+# define IS_FIRST 8
 
 # define ACC_FILE(cur) ((t_file *)cur->content)
 
@@ -45,6 +48,7 @@ typedef struct		s_file
 	struct stat		stats;
 	int				xattr;
 	char			infos;
+	blkcnt_t		total;
 }					t_file;
 
 void				read_args(int argc, char **argv, t_params *params);
