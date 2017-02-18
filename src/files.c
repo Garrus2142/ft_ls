@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 13:35:27 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 16:32:25 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,18 @@ static int		sort_child(t_list *new, t_list *next, void *param)
 				ACC_FILE(next)->stats.st_mode & S_IFDIR)
 			return (1);
 	}
-	if (((t_params *)param)->options & OPT_t)
+	if (((t_params *)param)->options & OPT_T_LOW)
 	{
 		if (ACC_FILE(new)->stats.st_mtimespec.tv_sec >
 				ACC_FILE(next)->stats.st_mtimespec.tv_sec)
-			return (((t_params *)param)->options & OPT_r ? 0 : 1);
+			return (((t_params *)param)->options & OPT_R_LOW ? 0 : 1);
 		else if (ACC_FILE(new)->stats.st_mtimespec.tv_sec <
 				ACC_FILE(next)->stats.st_mtimespec.tv_sec)
-			return (((t_params *)param)->options & OPT_r ? 1 : 0);
+			return (((t_params *)param)->options & OPT_R_LOW ? 1 : 0);
 	}
 	if (ft_strcmp(ACC_FILE(new)->name, ACC_FILE(next)->name) < 0)
-		return (((t_params *)param)->options & OPT_r ? 0 : 1);
-	return (((t_params *)param)->options & OPT_r ? 1 : 0);
+		return (((t_params *)param)->options & OPT_R_LOW ? 0 : 1);
+	return (((t_params *)param)->options & OPT_R_LOW ? 1 : 0);
 }
 
 static void		dir_add_child(t_params *p, t_file *parent, char *name)
@@ -47,7 +47,7 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 	char	*fullpath;
 	t_list	*new;
 
-	if (name[0] == '.' && !(p->options & OPT_a))
+	if (name[0] == '.' && !(p->options & OPT_A_LOW))
 		return ;
 	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path,
 			(parent->infos & IS_ROOT) ? "" : "/"), 1, name, 0)))
@@ -56,7 +56,9 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 		exit(EXIT_FAILURE);
 	child.childs = NULL;
 	child.infos = 0;
+	child.total = 0;
 	file_get_stats(p, &child);
+	parent->total += child.stats.st_blocks;
 	if (!(new = ft_lstnew(&child, sizeof(child))))
 		exit(EXIT_FAILURE);
 	ft_lstaddsort(&(parent->childs), new, p, sort_child);
@@ -106,6 +108,7 @@ static void		setup_operand(t_params *params, t_list **files)
 			exit(EXIT_FAILURE);
 		file.childs = NULL;
 		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
+		file.total = 0;
 		file_get_stats(params, &file);
 		if (!(tmp = ft_lstnew(&file, sizeof(file))))
 			exit(EXIT_FAILURE);
@@ -121,6 +124,8 @@ void			process_files(t_params *params, t_list **files)
 	setup_operand(params, files);
 	params->options = params->options & (255 ^ OPT_SORT_TYPE);
 	cur = *files;
+	if (cur)
+		ACC_FILE(cur)->infos = ACC_FILE(cur)->infos | IS_FIRST;
 	while ((tmp = cur))
 	{
 		free(ACC_FILE(cur)->name);
