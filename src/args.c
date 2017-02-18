@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:43:48 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 15:39:04 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 15:53:02 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 static void	print_usage(char option)
 {
-	ft_printf("ft_ls: illegal option -- %c\nusage: ft_ls [-lRartG] [file ...]\n",
-		option);
+	ft_printf("ft_ls: illegal option -- %c\nusage: ft_ls [-%s] [file ...]\n",
+		option, "lRartG1");
 	exit(EXIT_FAILURE);
 }
 
@@ -28,17 +28,19 @@ static void	check_option(char *options, t_params *params)
 	while (options[++i])
 	{
 		if (options[i] == 'l')
-			params->options = params->options | OPT_l;
+			params->options = params->options | OPT_L_LOW;
 		else if (options[i] == 'R')
 			params->options = params->options | OPT_R;
 		else if (options[i] == 'a')
-			params->options = params->options | OPT_a;
+			params->options = params->options | OPT_A_LOW;
 		else if (options[i] == 'r')
-			params->options = params->options | OPT_r;
+			params->options = params->options | OPT_R_LOW;
 		else if (options[i] == 't')
-			params->options = params->options | OPT_t;
+			params->options = params->options | OPT_T_LOW;
 		else if (options[i] == 'G')
 			params->options = params->options | OPT_G;
+		else if (options[i] == '1')
+			params->options = params->options | OPT_1;
 		else
 			print_usage(options[i]);
 	}
