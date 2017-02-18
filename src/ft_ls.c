@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 12:03:27 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/18 15:23:28 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int		main(int argc, char **argv)
 	t_list		*cur;
 
 	read_args(argc, argv, &params);
+	ft_tabsort(params.files, params.nfiles, ft_strcmp);
 	files = NULL;
 	params.options = params.options | OPT_SORT_TYPE;
 	process_files(&params, &files);
