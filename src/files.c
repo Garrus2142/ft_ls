@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 03:50:37 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 17:19:35 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,15 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 
 	if (name[0] == '.' && !(p->options & OPT_A_LOW))
 		return ;
+	ft_bzero(&child, sizeof(t_file));
 	if (!(child.path = ft_strfjoin(ft_strjoin(parent->path,
 			(parent->infos & IS_ROOT) ? "" : "/"), 1, name, 0)))
 		exit(EXIT_FAILURE);
 	if (!(child.name = ft_strdup(name)))
 		exit(EXIT_FAILURE);
-	child.childs = NULL;
-	child.infos = 0;
-	child.total = 0;
-	child.nlink_max = 0;
-	child.n_pw_name = 0;
-	child.n_gr_name = 0;
 	file_get_stats(p, &child);
 	if (p->options & OPT_L_LOW)
-		file_get_long_stats(p, parent, &child);
+		file_get_long_stats(parent, &child);
 	if (!(new = ft_lstnew(&child, sizeof(child))))
 		exit(EXIT_FAILURE);
 	ft_lstaddsort(&(parent->childs), new, p, sort_child);
@@ -106,16 +101,15 @@ static void		setup_operand(t_params *params, t_list **files)
 	i = -1;
 	while (++i < params->nfiles)
 	{
+		ft_bzero(&file, sizeof(t_file));
 		if (!(file.path = ft_strdup(params->files[i])))
 			exit(EXIT_FAILURE);
 		if (!(file.name = ft_strdup(params->files[i])))
 			exit(EXIT_FAILURE);
-		file.childs = NULL;
 		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
-		file.total = 0;
-		file.n_pw_name = 0;
-		file.n_gr_name = 0;
 		file_get_stats(params, &file);
+		if (params->options & OPT_L_LOW && !(S_ISDIR(file.stats.st_mode)))
+			file_get_long_stats(&file, &file); //TMP
 		file.nlink_max = file.stats.st_nlink;
 		if (!(file.infos & IS_ERROR))
 		{
