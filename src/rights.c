@@ -6,13 +6,12 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/19 00:57:26 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 02:05:15 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 15:14:05 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/xattr.h>
 #include "ft_ls.h"
-#include "../libft/libft.h"
 
 static void	set_type(t_file *file, char *rights)
 {
