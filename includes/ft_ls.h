@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 02:05:46 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 03:34:23 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,21 @@ typedef struct		s_file
 	char			*path;
 	char			*name;
 	t_list			*childs;
+	char			*pw_name;
+	char			*gr_name;
 	struct stat		stats;
 	char			infos;
 	blkcnt_t		total;
+	nlink_t			nlink_max;
+	int				n_pw_name;
+	int				n_gr_name;
 }					t_file;
 
 void				read_args(int argc, char **argv, t_params *params);
 void				process_files(t_params *params, t_list **files);
 void				file_get_stats(t_params *p, t_file *file);
+void				file_get_long_stats(t_params *p, t_file *parent,
+						t_file *file);
 void				display_file(t_params *p, t_file *file);
 void				ls_error(t_file *file);
 void				free_file(t_list *elem);
