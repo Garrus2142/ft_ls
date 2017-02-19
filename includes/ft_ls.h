@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 16:31:18 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 02:05:46 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ typedef struct		s_file
 	char			*name;
 	t_list			*childs;
 	struct stat		stats;
-	int				xattr;
 	char			infos;
 	blkcnt_t		total;
 }					t_file;
@@ -57,5 +56,6 @@ void				file_get_stats(t_params *p, t_file *file);
 void				display_file(t_params *p, t_file *file);
 void				ls_error(t_file *file);
 void				free_file(t_list *elem);
+void				get_rights(t_params *p, t_file *file, char *rights);
 
 #endif
