@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/18 17:11:22 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 01:20:28 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static int		sort_child(t_list *new, t_list *next, void *param)
 {
 	if (((t_params *)param)->options & OPT_SORT_TYPE)
 	{
-		if (ACC_FILE(new)->stats.st_mode & S_IFDIR &&
-				!(ACC_FILE(next)->stats.st_mode & S_IFDIR))
+		if (S_ISDIR(ACC_FILE(new)->stats.st_mode) &&
+				!(S_ISDIR(ACC_FILE(next)->stats.st_mode)))
 			return (0);
-		else if (!(ACC_FILE(new)->stats.st_mode & S_IFDIR) &&
-				ACC_FILE(next)->stats.st_mode & S_IFDIR)
+		else if (!(S_ISDIR(ACC_FILE(new)->stats.st_mode)) &&
+				S_ISDIR(ACC_FILE(next)->stats.st_mode))
 			return (1);
 	}
 	if (((t_params *)param)->options & OPT_T_LOW)
@@ -84,7 +84,7 @@ static void		dir_get_childs(t_params *p, t_file *f)
 	cur = f->childs;
 	while ((tmp = cur))
 	{
-		if (p->options & OPT_R && ACC_FILE(cur)->stats.st_mode & S_IFDIR &&
+		if (p->options & OPT_R && S_ISDIR(ACC_FILE(cur)->stats.st_mode) &&
 				ft_strcmp(ACC_FILE(cur)->name, ".") != 0 &&
 				ft_strcmp(ACC_FILE(cur)->name, "..") != 0)
 			dir_get_childs(p, (t_file *)cur->content);
@@ -133,7 +133,7 @@ void			process_files(t_params *params, t_list **files)
 	{
 		free(ACC_FILE(cur)->name);
 		ACC_FILE(cur)->name = ft_path_getfile(ACC_FILE(cur)->path);
-		if (ACC_FILE(cur)->stats.st_mode & S_IFDIR)
+		if (S_ISDIR(ACC_FILE(cur)->stats.st_mode))
 			dir_get_childs(params, (t_file *)cur->content);
 		else
 			display_file(params, (t_file *)cur->content);
