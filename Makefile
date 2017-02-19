@@ -6,13 +6,13 @@
 #    By: thugo <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/02 14:29:27 by thugo             #+#    #+#              #
-#    Updated: 2017/02/16 16:20:18 by thugo            ###   ########.fr        #
+#    Updated: 2017/02/19 00:58:38 by thugo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = ft_ls
 LIBFT = libft.a
 
-FILE_SRC = src/ft_ls.c src/args.c src/files.c src/stats.c src/display.c
+FILE_SRC = src/ft_ls.c src/args.c src/files.c src/stats.c src/display.c src/rights.c
 
 OBJ = $(FILE_SRC:.c=.o)
 
