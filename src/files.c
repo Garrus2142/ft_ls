@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 01:20:28 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/19 03:50:37 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,12 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 	child.childs = NULL;
 	child.infos = 0;
 	child.total = 0;
+	child.nlink_max = 0;
+	child.n_pw_name = 0;
+	child.n_gr_name = 0;
 	file_get_stats(p, &child);
-	parent->total += child.stats.st_blocks;
+	if (p->options & OPT_L_LOW)
+		file_get_long_stats(p, parent, &child);
 	if (!(new = ft_lstnew(&child, sizeof(child))))
 		exit(EXIT_FAILURE);
 	ft_lstaddsort(&(parent->childs), new, p, sort_child);
@@ -109,7 +113,10 @@ static void		setup_operand(t_params *params, t_list **files)
 		file.childs = NULL;
 		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
 		file.total = 0;
+		file.n_pw_name = 0;
+		file.n_gr_name = 0;
 		file_get_stats(params, &file);
+		file.nlink_max = file.stats.st_nlink;
 		if (!(file.infos & IS_ERROR))
 		{
 			if (!(tmp = ft_lstnew(&file, sizeof(file))))
