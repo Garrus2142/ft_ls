@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:43:48 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 12:45:39 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 15:26:58 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ static void	print_usage(char *cmd, char option)
 	ft_printf("%s: illegal option -- %c\nusage: ft_ls [-%s] [file ...]\n",
 		cmd, option, "lRartG1nS");
 	exit(EXIT_FAILURE);
+}
+
+static void	check_option2(char *cmd, char option, t_params *params)
+{
+	if (option == '1')
+		params->options = params->options & (255 ^ OPT_L_LOW);
+	else
+		print_usage(cmd, option);
 }
 
 static void	check_option(char *cmd, char *options, t_params *params)
@@ -43,8 +51,8 @@ static void	check_option(char *cmd, char *options, t_params *params)
 			params->options = params->options | OPT_N_LOW;
 		else if (options[i] == 'S')
 			params->options = params->options | OPT_S;
-		else if (options[i] != '1')
-			print_usage(cmd, options[i]);
+		else
+			check_option2(cmd, options[i], params);
 	}
 }
 
