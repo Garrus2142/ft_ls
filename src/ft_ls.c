@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 02:18:02 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 03:19:57 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ void		ls_error(t_file *file)
 
 void		free_file(t_list *elem)
 {
-	free(((t_file *)elem->content)->path);
-	free(((t_file *)elem->content)->name);
+	free(ACC_FILE(elem)->path);
+	free(ACC_FILE(elem)->name);
+	if (ACC_FILE(elem)->linktarget)
+		free(ACC_FILE(elem)->linktarget);
 	free(elem->content);
 	free(elem);
 }
