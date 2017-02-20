@@ -6,14 +6,17 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 09:05:09 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 18:16:10 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 03:08:35 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/param.h>
+#include <time.h>
 #include <grp.h>
 #include <pwd.h>
+#include <unistd.h>
 #include "ft_ls.h"
 
 void		file_get_stats(t_params *p, t_file *file)
@@ -61,6 +64,25 @@ static void	set_uidgid(t_file *parent, t_file *file)
 		file->n_gr_name = size;
 }
 
+static void	set_mdate(t_file *file)
+{
+	static time_t	timenow;
+	char			*strtime;
+
+	ft_memset(file->mtime, ' ', 12);
+	file->mtime[12] = '\0';
+	if (timenow == 0)
+		timenow = time(NULL);
+	if (!(strtime = ctime(&(file->stats.st_mtimespec.tv_sec))))
+		return ;
+	ft_memcpy(file->mtime, strtime + 4, 6);
+	if (file->stats.st_mtimespec.tv_sec > timenow ||
+			file->stats.st_mtimespec.tv_sec < timenow - ((365 / 2) * 86400))
+		ft_memcpy(file->mtime + 8, strtime + 20, 4);
+	else
+		ft_memcpy(file->mtime + 7, strtime + 11, 5);
+}
+
 void		file_get_long_stats(t_file *parent, t_file *file)
 {
 	struct passwd	*pwd;
@@ -70,8 +92,15 @@ void		file_get_long_stats(t_file *parent, t_file *file)
 	if (file->stats.st_nlink > parent->nlink_max)
 		parent->nlink_max = file->stats.st_nlink;
 	set_uidgid(parent, file);
+	set_mdate(file);
 	if (S_ISBLK(file->stats.st_mode) || S_ISCHR(file->stats.st_mode))
 		parent->infos = parent->infos | HAS_BLKCHR;
 	else if (file->stats.st_size > parent->size_max)
 		parent->size_max = file->stats.st_size;
+	if (S_ISLNK(file->stats.st_mode))
+	{
+		if (!(file->linktarget = ft_strnew(MAXPATHLEN + 1)))
+			exit(EXIT_FAILURE);
+		readlink(file->path, file->linktarget, MAXPATHLEN);
+	}
 }
