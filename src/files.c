@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 09:55:30 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:48:00 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,14 @@
 
 static int		sort_child(t_list *new, t_list *next, void *param)
 {
-	if (((t_params *)param)->options & OPT_T_LOW)
+	if (((t_params *)param)->options & OPT_S)
+	{
+		if (ACC_FILE(new)->stats.st_size > ACC_FILE(next)->stats.st_size)
+			return (((t_params *)param)->options & OPT_R_LOW ? 0 : 1);
+		else if (ACC_FILE(new)->stats.st_size < ACC_FILE(next)->stats.st_size)
+			return (((t_params *)param)->options & OPT_R_LOW ? 1 : 0);
+	}
+	else if (((t_params *)param)->options & OPT_T_LOW)
 	{
 		if (ACC_FILE(new)->stats.st_mtimespec.tv_sec >
 				ACC_FILE(next)->stats.st_mtimespec.tv_sec)
@@ -47,7 +54,7 @@ static void		dir_add_child(t_params *p, t_file *parent, char *name)
 		exit(EXIT_FAILURE);
 	file_get_stats(p, &child);
 	if (p->options & OPT_L_LOW)
-		file_get_long_stats(parent, &child);
+		file_get_long_stats(p, parent, &child);
 	if (!(new = ft_lstnew(&child, sizeof(child))))
 		exit(EXIT_FAILURE);
 	ft_lstaddsort(&(parent->childs), new, p, sort_child);
@@ -102,7 +109,7 @@ static void		setup_operand(t_params *params, t_file *nodirs, t_list **files)
 			if (!(new = ft_lstnew(&file, sizeof(file))))
 				exit(EXIT_FAILURE);
 			if (params->options & OPT_L_LOW && !S_ISDIR(file.stats.st_mode))
-				file_get_long_stats(nodirs, ACC_FILE(new));
+				file_get_long_stats(params, nodirs, ACC_FILE(new));
 			if (!S_ISDIR(file.stats.st_mode))
 				ft_lstaddsort(&(nodirs->childs), new, params, sort_child);
 			else

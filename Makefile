@@ -6,7 +6,7 @@
 #    By: thugo <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/02 14:29:27 by thugo             #+#    #+#              #
-#    Updated: 2017/02/19 00:58:38 by thugo            ###   ########.fr        #
+#    Updated: 2017/02/20 13:18:22 by thugo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = ft_ls
@@ -16,12 +16,11 @@ FILE_SRC = src/ft_ls.c src/args.c src/files.c src/stats.c src/display.c src/righ
 
 OBJ = $(FILE_SRC:.c=.o)
 
-#FLAGS = -Werror -Wextra -Wall
-FLAGS =
+FLAGS = -Werror -Wextra -Wall
 
-all: $(LIBFT) $(NAME)
+all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(LIBFT) $(OBJ)
 	@echo "\033[34mCreation de $(NAME)...\033[0m"
 	@gcc -Llibft -lft -o $(NAME) $(OBJ)
 	@echo "\033[32mTermine\033[0m"
@@ -32,7 +31,6 @@ $(LIBFT):
 %.o: %.c
 	@echo "\033[34mCompilation:\033[0m $^ \033[34m>\033[0m $@"
 	@gcc $(FLAGS) -I includes -c $^ -o $@
-	@echo "Remet les flags"
 
 clean:
 	@echo "\033[31mSuppression des objets...\033[0m $@"
@@ -45,3 +43,5 @@ fclean: clean
 	@make -C libft fclean
 
 re: fclean all
+
+.PHONY: all clean fclean re

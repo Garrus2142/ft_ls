@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/19 00:57:26 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 15:14:05 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:52:47 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	set_attr(t_file *file, char *rights)
 		rights[10] = '@';
 }
 
-void		get_rights(t_params *p, t_file *file, char *rights)
+void		get_rights(t_file *file, char *rights)
 {
 	ft_memset(rights, '-', 10);
 	ft_memset(rights + 10, '\0', 2);

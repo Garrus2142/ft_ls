@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/04 12:55:13 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 11:42:16 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:53:19 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	print_long(t_params *p, t_file *par, t_file *file)
 		exit(EXIT_FAILURE);
 	if (!(gr = file->gr_name ? file->gr_name : ft_itoa(file->stats.st_gid)))
 		exit(EXIT_FAILURE);
-	get_rights(p, file, rights);
+	get_rights(file, rights);
 	ft_printf("%-11s %*lu %-*s  %-*s", rights, par->nlink_max, file->stats.
 		st_nlink, par->n_pw_name, pw, par->n_gr_name, gr, par->size_max);
 	free(pw);

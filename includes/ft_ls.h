@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 10:51:51 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:53:00 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 # define OPT_R_LOW 8
 # define OPT_T_LOW 16
 # define OPT_G 32
-# define OPT_1 64
+# define OPT_N_LOW 64
+# define OPT_S 128
 
 # define HAS_BLKCHR 1
 # define IS_OPERAND 2
@@ -61,10 +62,11 @@ typedef struct		s_file
 void				read_args(int argc, char **argv, t_params *params);
 void				process_files(t_params *params, t_list **files);
 int					file_get_stats(t_params *p, t_file *file);
-void				file_get_long_stats(t_file *parent, t_file *file);
+void				file_get_long_stats(t_params *p, t_file *parent,
+						t_file *file);
 void				display_file(t_params *p, t_file *file);
 void				ls_error(t_file *file);
 void				free_file(t_list *elem);
-void				get_rights(t_params *p, t_file *file, char *rights);
+void				get_rights(t_file *file, char *rights);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 08:44:35 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:51:52 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ int			main(int argc, char **argv)
 {
 	t_params	params;
 	t_list		*files;
-	t_list		*cur;
 
 	read_args(argc, argv, &params);
 	check_empty(&params);

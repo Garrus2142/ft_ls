@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 09:05:09 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 11:01:53 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 12:52:18 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,13 @@ static void	set_mdate(t_file *file)
 		ft_memcpy(file->mtime + 7, strtime + 11, 5);
 }
 
-void		file_get_long_stats(t_file *parent, t_file *file)
+void		file_get_long_stats(t_params *p, t_file *parent, t_file *file)
 {
-	struct passwd	*pwd;
-	struct group	*grp;
-
 	parent->total += file->stats.st_blocks;
 	if (file->stats.st_nlink > parent->nlink_max)
 		parent->nlink_max = file->stats.st_nlink;
-	set_uidgid(parent, file);
+	if (!(p->options & OPT_N_LOW))
+		set_uidgid(parent, file);
 	set_mdate(file);
 	if (S_ISBLK(file->stats.st_mode) || S_ISCHR(file->stats.st_mode))
 		parent->infos = parent->infos | HAS_BLKCHR;
