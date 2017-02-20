@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 09:05:09 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 03:08:35 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 11:01:53 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include "ft_ls.h"
 
-void		file_get_stats(t_params *p, t_file *file)
+int			file_get_stats(t_params *p, t_file *file)
 {
 	if (!(p->options & OPT_L_LOW) && file->infos & IS_OPERAND)
 	{
@@ -34,6 +34,7 @@ void		file_get_stats(t_params *p, t_file *file)
 		if (lstat(file->path, &(file->stats)) && !(file->infos & IS_ERROR))
 			ls_error(file);
 	}
+	return (!(file->infos & IS_ERROR));
 }
 
 static void	set_uidgid(t_file *parent, t_file *file)
@@ -76,7 +77,9 @@ static void	set_mdate(t_file *file)
 	if (!(strtime = ctime(&(file->stats.st_mtimespec.tv_sec))))
 		return ;
 	ft_memcpy(file->mtime, strtime + 4, 6);
-	if (file->stats.st_mtimespec.tv_sec > timenow ||
+	if (file->stats.st_mtimespec.tv_sec >= 253402297200)
+		ft_strcpy(file->mtime + 8, "10000");
+	else if (file->stats.st_mtimespec.tv_sec > timenow ||
 			file->stats.st_mtimespec.tv_sec < timenow - ((365 / 2) * 86400))
 		ft_memcpy(file->mtime + 8, strtime + 20, 4);
 	else

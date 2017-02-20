@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/03 08:47:05 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 17:19:35 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 09:55:30 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,6 @@
 
 static int		sort_child(t_list *new, t_list *next, void *param)
 {
-	if (((t_params *)param)->options & OPT_SORT_TYPE)
-	{
-		if (S_ISDIR(ACC_FILE(new)->stats.st_mode) &&
-				!(S_ISDIR(ACC_FILE(next)->stats.st_mode)))
-			return (0);
-		else if (!(S_ISDIR(ACC_FILE(new)->stats.st_mode)) &&
-				S_ISDIR(ACC_FILE(next)->stats.st_mode))
-			return (1);
-	}
 	if (((t_params *)param)->options & OPT_T_LOW)
 	{
 		if (ACC_FILE(new)->stats.st_mtimespec.tv_sec >
@@ -44,7 +35,6 @@ static int		sort_child(t_list *new, t_list *next, void *param)
 static void		dir_add_child(t_params *p, t_file *parent, char *name)
 {
 	t_file	child;
-	char	*fullpath;
 	t_list	*new;
 
 	if (name[0] == '.' && !(p->options & OPT_A_LOW))
@@ -84,49 +74,56 @@ static void		dir_get_childs(t_params *p, t_file *f)
 	while ((tmp = cur))
 	{
 		if (p->options & OPT_R && S_ISDIR(ACC_FILE(cur)->stats.st_mode) &&
-				ft_strcmp(ACC_FILE(cur)->name, ".") != 0 &&
-				ft_strcmp(ACC_FILE(cur)->name, "..") != 0)
+	ft_strcmp(ACC_FILE(cur)->name, ".") && ft_strcmp(ACC_FILE(cur)->name, ".."))
 			dir_get_childs(p, (t_file *)cur->content);
 		cur = cur->next;
 		free_file(tmp);
 	}
+	f->childs = NULL;
 }
 
-static void		setup_operand(t_params *params, t_list **files)
+static void		setup_operand(t_params *params, t_file *nodirs, t_list **files)
 {
 	t_file	file;
-	t_list	*tmp;
+	t_list	*new;
 	int		i;
 
+	ft_bzero(nodirs, sizeof(t_file));
 	i = -1;
 	while (++i < params->nfiles)
 	{
 		ft_bzero(&file, sizeof(t_file));
-		if (!(file.path = ft_strdup(params->files[i])))
-			exit(EXIT_FAILURE);
-		if (!(file.name = ft_strdup(params->files[i])))
+		file.path = ft_strdup(params->files[i]);
+		if (!file.path || !(file.name = ft_strdup(params->files[i])))
 			exit(EXIT_FAILURE);
 		file.infos = (IS_OPERAND | (!ft_strcmp(file.path, "/") ? IS_ROOT : 0));
-		file_get_stats(params, &file);
-		if (params->options & OPT_L_LOW && !(S_ISDIR(file.stats.st_mode)))
-			file_get_long_stats(&file, &file); //TMP
-		file.nlink_max = file.stats.st_nlink;
-		if (!(file.infos & IS_ERROR))
+		if (file_get_stats(params, &file))
 		{
-			if (!(tmp = ft_lstnew(&file, sizeof(file))))
+			if (!(new = ft_lstnew(&file, sizeof(file))))
 				exit(EXIT_FAILURE);
-			ft_lstaddsort(files, tmp, params, sort_child);
+			if (params->options & OPT_L_LOW && !S_ISDIR(file.stats.st_mode))
+				file_get_long_stats(nodirs, ACC_FILE(new));
+			if (!S_ISDIR(file.stats.st_mode))
+				ft_lstaddsort(&(nodirs->childs), new, params, sort_child);
+			else
+				ft_lstaddsort(files, new, params, sort_child);
 		}
 	}
 }
 
 void			process_files(t_params *params, t_list **files)
 {
+	t_file	nodirs;
 	t_list	*cur;
 	t_list	*tmp;
 
-	setup_operand(params, files);
-	params->options = params->options & (255 ^ OPT_SORT_TYPE);
+	setup_operand(params, &nodirs, files);
+	if (nodirs.childs)
+	{
+		if (!(tmp = ft_lstnew(&nodirs, sizeof(t_file))))
+			exit(EXIT_FAILURE);
+		ft_lstadd(files, tmp);
+	}
 	cur = *files;
 	if (cur)
 		ACC_FILE(cur)->infos = ACC_FILE(cur)->infos | IS_FIRST;
@@ -135,9 +132,9 @@ void			process_files(t_params *params, t_list **files)
 		free(ACC_FILE(cur)->name);
 		ACC_FILE(cur)->name = ft_path_getfile(ACC_FILE(cur)->path);
 		if (S_ISDIR(ACC_FILE(cur)->stats.st_mode))
-			dir_get_childs(params, (t_file *)cur->content);
+			dir_get_childs(params, ACC_FILE(cur));
 		else
-			display_file(params, (t_file *)cur->content);
+			display_file(params, ACC_FILE(cur));
 		cur = cur->next;
 		free_file(tmp);
 	}

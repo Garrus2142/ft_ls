@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:22:46 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/19 18:14:41 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 10:51:51 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@
 # define OPT_A_LOW 4
 # define OPT_R_LOW 8
 # define OPT_T_LOW 16
-# define OPT_SORT_TYPE 32
-# define OPT_G 64
-# define OPT_1 128
+# define OPT_G 32
+# define OPT_1 64
 
 # define HAS_BLKCHR 1
 # define IS_OPERAND 2
@@ -51,6 +50,8 @@ typedef struct		s_file
 	struct stat		stats;
 	char			infos;
 	blkcnt_t		total;
+	char			*linktarget;
+	char			mtime[14];
 	nlink_t			nlink_max;
 	int				n_pw_name;
 	int				n_gr_name;
@@ -59,7 +60,7 @@ typedef struct		s_file
 
 void				read_args(int argc, char **argv, t_params *params);
 void				process_files(t_params *params, t_list **files);
-void				file_get_stats(t_params *p, t_file *file);
+int					file_get_stats(t_params *p, t_file *file);
 void				file_get_long_stats(t_file *parent, t_file *file);
 void				display_file(t_params *p, t_file *file);
 void				ls_error(t_file *file);

@@ -6,7 +6,7 @@
 /*   By: thugo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/30 18:35:00 by thugo             #+#    #+#             */
-/*   Updated: 2017/02/20 03:19:57 by thugo            ###   ########.fr       */
+/*   Updated: 2017/02/20 08:44:35 by thugo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,19 @@ void		ls_error(t_file *file)
 
 void		free_file(t_list *elem)
 {
+	t_list	*cur;
+	t_list	*tmp;
+
 	free(ACC_FILE(elem)->path);
 	free(ACC_FILE(elem)->name);
 	if (ACC_FILE(elem)->linktarget)
 		free(ACC_FILE(elem)->linktarget);
+	cur = ACC_FILE(elem)->childs;
+	while ((tmp = cur))
+	{
+		cur = cur->next;
+		free_file(tmp);
+	}
 	free(elem->content);
 	free(elem);
 }
@@ -60,7 +69,6 @@ int			main(int argc, char **argv)
 	check_empty(&params);
 	ft_tabsort(params.files, params.nfiles, ft_strcmp);
 	files = NULL;
-	params.options = params.options | OPT_SORT_TYPE;
 	process_files(&params, &files);
 	ft_tabfree((void ***)&(params.files), params.nfiles);
 	return (EXIT_SUCCESS);
