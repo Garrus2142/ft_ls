@@ -6,7 +6,7 @@
 #    By: thugo <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/02 14:29:27 by thugo             #+#    #+#              #
-#    Updated: 2017/02/20 13:18:22 by thugo            ###   ########.fr        #
+#    Updated: 2017/02/20 13:28:05 by thugo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = ft_ls
@@ -20,13 +20,11 @@ FLAGS = -Werror -Wextra -Wall
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJ)
+$(NAME): $(OBJ)
+	@make -C libft
 	@echo "\033[34mCreation de $(NAME)...\033[0m"
 	@gcc -Llibft -lft -o $(NAME) $(OBJ)
 	@echo "\033[32mTermine\033[0m"
-
-$(LIBFT):
-	@make -C libft
 
 %.o: %.c
 	@echo "\033[34mCompilation:\033[0m $^ \033[34m>\033[0m $@"
